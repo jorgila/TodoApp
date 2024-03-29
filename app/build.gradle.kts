@@ -59,7 +59,7 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:2.51")
     kapt ("com.google.dagger:hilt-compiler:2.51")
 
-
+    // LIVE DATA
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.4")
 
