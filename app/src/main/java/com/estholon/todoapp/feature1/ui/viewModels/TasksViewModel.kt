@@ -7,23 +7,29 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.estholon.todoapp.feature1.domain.AddTaskUseCase
+import com.estholon.todoapp.feature1.domain.DeleteTaskUseCase
 import com.estholon.todoapp.feature1.domain.GetTaskUseCase
+import com.estholon.todoapp.feature1.domain.UpdateTaskUseCase
 import com.estholon.todoapp.feature1.ui.TasksUiState
 import com.estholon.todoapp.feature1.ui.TasksUiState.*
 import com.estholon.todoapp.feature1.ui.model.TaskModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 import javax.inject.Inject
 
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     private val addTaskUseCase: AddTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase,
     getTaskUseCase: GetTaskUseCase
 ): ViewModel(){
 
@@ -60,12 +66,16 @@ class TasksViewModel @Inject constructor(
 //        val index = _task.indexOf(taskModel)
 //        _task[index] = _task[index].let{
 //            it.copy(selected = !it.selected)
+        viewModelScope.launch {
+            updateTaskUseCase(taskModel.copy(selected = !taskModel.selected))
         }
-    }
+
+        }
 
     fun onItemRemove(taskModel: TaskModel) {
-        //Borrar item
-//        val task = _task.find { it.id == taskModel.id }
-//        _task.remove(task)
+
+        viewModelScope.launch {
+            deleteTaskUseCase(taskModel)
+        }
     }
 }
